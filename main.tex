@@ -1,0 +1,107 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{graphicx} % Required for inserting images
+\usepackage{geometry}
+\usepackage{footmisc}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage[all]{hypcap}
+
+
+\usepackage{helvet} % Set font to Arial
+\renewcommand{\familydefault}{\sfdefault} % Set font to Arial
+
+\usepackage[ngerman]{babel} % German language support
+
+\usepackage
+[backend=biber,style=apa,sorting=nyt]{biblatex}
+\addbibresource{main.bib}
+
+% Anpassung der Schriftgröße der Fußnoten
+\renewcommand{\footnotesize}{\fontsize{10pt}{12pt}\selectfont}
+\usepackage{ragged2e} % Text formatting
+\justifying % justify text
+
+
+% Zeilenabstand
+\usepackage{setspace}
+\setstretch{1.5}
+
+% Seitenabstände
+\geometry{
+    top=3 cm,
+    left=3 cm,
+    right=3 cm,
+    bottom=3 cm,
+    headsep=1 cm
+}
+
+\graphicspath{ {img/} }
+
+% No indent für ganzes dokument
+\setlength\parindent{0pt}
+
+% Zeilenabstand nach paragraphs
+\setlength{\parskip}{0.4\baselineskip}
+
+\title{Command Pattern
+\\ \large Wissenschaftliche Themenarbeit}
+
+\author{Henning Franzen, Jan Osing, Jonas Schierhold}
+\date{Januar 2026}
+
+\begin{document}
+
+    \maketitle
+    \thispagestyle{empty}
+
+    \begin{center}
+        \includegraphics[width=150pt]{img/IHK-Logo.jpg} \includegraphics[width=150pt]{img/WHS-Logo.png}
+    \end{center}
+
+    \vfill
+    \noindent
+    \begin{tabular}{p{4cm}l}
+        Matrikelnummern: & 202326004, 202326072,  202326008 \tabularnewline
+        Studiengang: & Duales Studium Bachelor of Arts Wirtschaftsinformatik \tabularnewline
+        Gruppe: & IT-BW-18 \tabularnewline
+        Themensteller: & Prof. Dr. Priemer \tabularnewline
+        Abgabedatum: & 19. Juni 2026 \tabularnewline
+    \end{tabular}
+
+    \newpage
+    \pagenumbering{Roman} % Setzt die Nummerierung auf römnische Zahlen
+
+    \tableofcontents
+
+    \newpage
+
+
+    \section*{Abkürzungsverzeichnis}
+
+    \noindent
+    \begin{tabular}{p{4cm}l}
+        JSON & Javascript Object Notation \tabularnewline
+    \end{tabular}
+
+    \newpage
+    \pagenumbering{arabic} % Wechsel zur arabischen Nummerierung
+    \setcounter{page}{1} % Startet die Nummerierung bei 1
+    \setcounter{section}{0} % Setzt den Abschnittszähler auf 0
+
+
+    \section{Einleitung}
+
+
+    \newpage
+
+    \pagenumbering{Roman} % Setzt die Nummerierung auf römnische Zahlen
+    \setcounter{page}{3} % Setzt die Nummerierung auf 3
+
+    \printbibliography
+
+
+\end{document}
