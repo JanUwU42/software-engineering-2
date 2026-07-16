@@ -91,11 +91,55 @@
     \pagenumbering{arabic} % Wechsel zur arabischen Nummerierung
     \setcounter{page}{1} % Startet die Nummerierung bei 1
     \setcounter{section}{0} % Setzt den Abschnittszähler auf 0
-%
-%    **. Einleitung und Einordnung**
-%
-%- **Motivation:** Kurze Einführung in die Problemstellung, die das Muster löst.
-%- **Klassifizierung:** Einordnung des Musters (z. B. als Verhaltensmuster der GoF).
+
+    \section{Einleitung}
+
+    \subsection{Überblick}
+    Die Entwicklung moderner Softwaresysteme erfordert Lösungen, die sowohl flexibel als auch wartbar und erweiterbar
+    sind. Entwurfsmuster (Design Patterns) stellen hierfür bewährte Konzepte bereit, indem sie wiederkehrende Probleme
+    der objektorientierten Softwareentwicklung auf standardisierte Weise lösen. Sie bieten keine fertigen
+    Implementierungen, sondern beschreiben allgemeine Lösungsansätze, die abhängig vom jeweiligen Anwendungsfall
+    angepasst werden können.
+
+    Das Command Pattern gehört zu den verhaltensorientierten Entwurfsmustern und dient dazu, Anweisungen oder
+    Operationen als eigenständige Objekte zu kapseln. Durch diese Kapselung werden aufrufende und ausführende
+    Komponenten voneinander entkoppelt, wodurch sich Befehle flexibel verwalten, weitergeben oder zu einem späteren
+    Zeitpunkt ausführen lassen. Aufgrund dieser Eigenschaften findet das Muster in verschiedenen Bereichen der
+    Softwareentwicklung Anwendung, etwa bei grafischen Benutzeroberflächen, Undo/Redo-Funktionalität oder der
+    Verarbeitung von Befehlswarteschlangen.\footnote{\cite{schiele-command}}
+
+    Ziel dieser Hausarbeit ist es, das Command Pattern vorzustellen und dessen grundlegendes Konzept zu erläutern.
+    Hierzu werden zunächst die Funktionsweise sowie die beteiligten Komponenten des Entwurfsmusters beschrieben.
+    Anschließend werden typische Einsatzgebiete vorgestellt und anhand einer beispielhaften Implementierung die
+    praktische Anwendung des Musters verdeutlicht. Ergänzend werden UML-Diagramme verwendet, um den strukturellen
+    Aufbau sowie das Zusammenspiel der beteiligten Klassen anschaulich darzustellen.\footnote{\cite{gamma1995design}}
+
+    \subsection{Problemstellung}
+    In vielen Anwendungen werden Benutzeraktionen direkt mit der auszuführenden Programmlogik verknüpft.
+    Ein typisches Beispiel ist eine grafische Benutzeroberfläche (UI), in der verschiedene Buttons bestimmte Funktionen
+    auslösen. So kann beispielsweise ein Button zum Speichern eines Dokuments, ein weiterer zum Drucken und ein dritter
+    zum Löschen einer Datei dienen. Wird die jeweilige Funktion direkt im Code des Buttons implementiert, entsteht eine
+    enge Kopplung zwischen der Benutzeroberfläche und der eigentlichen Geschäftslogik.
+
+    Diese enge Abhängigkeit führt zu mehreren Problemen. Zum einen wird die Wiederverwendbarkeit der Funktionalität
+    eingeschränkt, da dieselbe Aktion beispielsweise nicht ohne Weiteres über Tastenkombinationen, Menüeinträge oder
+    andere Eingabemethoden ausgelöst werden kann. Zum anderen erschwert die direkte Verknüpfung die Wartung und
+    Erweiterung der Software. Jede Änderung an einer Funktion erfordert häufig auch Anpassungen an den entsprechenden
+    UI-Komponenten. Mit zunehmender Anzahl an Buttons und Funktionen wird der Quellcode dadurch unübersichtlicher und
+    schwieriger zu pflegen.
+
+    Ein weiteres Problem ergibt sich, wenn zusätzliche Anforderungen wie eine Undo-/Redo-Funktion, das Protokollieren
+    ausgeführter Aktionen oder die zeitversetzte Ausführung von Befehlen umgesetzt werden sollen. Sind die Aktionen
+    fest in den UI-Elementen implementiert, lassen sich solche Erweiterungen nur mit erheblichem Aufwand realisieren.
+
+    Zur Veranschaulichung kann eine Textverarbeitungsanwendung betrachtet werden. Dort besitzt die Benutzeroberfläche
+    unter anderem die Buttons \textit{Speichern}, \textit{Drucken} und \textit{Rückgängig}. Jeder Button soll eine
+    bestimmte Aktion auslösen, unabhängig davon, ob diese über einen Mausklick, einen Menüeintrag oder eine 
+    Tastenkombination aktiviert wird. Um diese Flexibilität zu erreichen, muss die Benutzeroberfläche von der
+    eigentlichen Ausführung der Aktionen entkoppelt werden. Genau an dieser Stelle setzt das Command Pattern an, indem
+    jede Benutzeraktion als eigenständiges Befehlsobjekt gekapselt wird. Die UI kennt lediglich das jeweilige Kommando
+    und muss keine Details über dessen konkrete Implementierung oder Ausführung besitzen.
+
 %
 %**2. Architektur und Funktionsweise**
 %
