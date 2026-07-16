@@ -162,14 +162,98 @@
 %- **Zusammenfassung:** Die wichtigsten Erkenntnisse auf den Punkt gebracht.
 %- **Abschließende Bewertung:** Wann sich der Einsatz in der modernen Softwareentwicklung wirklich lohnt.
 
+
     \section{Einleitung}
     asd
+
+
     \section{Architektur und Funktionsweise}
-    asda
+
+    \subsection*{Das 4-Punkte-Schema}
+
+    \textbf{Name}\\
+    Das Entwurfsmuster trägt den Namen Command-Pattern. Im deutschsprachigen Raum wird es als Kommando-Muster bezeichnet.
+    Es gehört zur Kategorie der Verhaltensmuster (Behavioral Patterns).
+
+    \textbf{Problem}\\
+    In der Softwareentwicklung müssen Objekte oft Anfragen an andere Objekte senden. Ein Problem entsteht, wenn der Absender
+    eng an den Empfänger gekoppelt ist. Ein klassisches Beispiel ist eine grafische Benutzeroberfläche. Ein Button soll einen
+    Speichervorgang auslösen. Der Button sollte jedoch keine Details der Datenbanklogik kennen. Eine direkte Verknüpfung führt
+    zu unflexiblem Code. Das System wird schwer wartbar. Wenn neue Funktionen hinzukommen, müssen bestehende Klassen verändert werden.
+    Dies verletzt grundlegende Prinzipien des sauberen Designs.
+
+    \textbf{Lösung}\\
+    -$>$ Hier UML Diagramm einfügen
+
+    Das Command-Pattern löst dieses Problem durch eine objektorientierte Kapselung. Es verwandelt eine Anfrage oder Operation
+    in ein eigenständiges Objekt. Dieses neue Objekt speichert alle nötigen Informationen über die auszuführende Aktion.
+    Der direkte Methodenaufruf wird somit abstrahiert. Die Architektur nutzt dafür ein gemeinsames Interface. Dieses Interface
+    schreibt in der Regel eine einzige Methode namens \texttt{execute()} vor. Der Sender der Anfrage arbeitet ab sofort nur
+    noch mit diesem Interface. Er muss die konkrete Implementierung nicht mehr kennen.
+
+    \textbf{Konsequenzen}\\
+    Dieses Vorgehen bringt deutliche Vor- und Nachteile mit sich. Der größte Vorteil ist die starke Entkopplung der Komponenten.
+    Absender und Empfänger sind völlig unabhängig. Neue Kommandos lassen sich jederzeit hinzufügen. Der bestehende Code bleibt
+    dabei unberührt. Der primäre Nachteil ist die steigende Komplexität. Für jeden neuen Befehl muss eine eigene Klasse programmiert
+    werden. Die reine Anzahl der Klassen wächst im System dadurch stark an. Ein weiterer großer Vorteil ist jedoch, dass diese
+    Struktur mächtige funktionale Erweiterungen ermöglicht.
+
+    \subsection*{Erweiterungsmöglichkeiten}
+
+    Das Command-Pattern bietet durch seine entkoppelte Struktur eine ideale Basis für fortgeschrittene Architekturen.
+
+    \textbf{Undo- und Redo-Mechanismen}\\
+    -$>$ Hier Ergänzungs UML Diagramm einfügen??
+    Aktionen können leicht rückgängig gemacht werden. Dafür wird das Interface um eine \texttt{undo()}-Methode ergänzt.
+    Das Kommando speichert intern den Zustand vor der Ausführung. Bei einem Undo-Aufruf stellt es diesen Ursprungszustand
+    wieder her. Redo-Operationen können das Kommando danach einfach erneut ausführen. Um einen komplexen Zustand wiederherzustellen,
+    lässt sich das Command-Pattern mit dem Memento-Pattern kombinieren.
+
+    \textbf{Makros (Befehlsketten)}\\
+    -$>$ Hier Ergänzungs UML Diagramm einfügen??
+    Mehrere Einzelkommandos können zu sogenannten Makros gebündelt werden. Dies geschieht über ein übergeordnetes Makro-Kommando.
+    Es implementiert ebenfalls das Standard-Interface. In seiner \texttt{execute()}-Methode arbeitet es nacheinander eine Liste
+    von Teilkommandos ab.
+
+    \textbf{Warteschlangen und Logging}\\
+    -$>$ Hier Ergänzungs UML Diagramm einfügen??
+    Befehle lassen sich in einer Warteschlange (Queue) speichern. Dadurch können sie asynchron zu einem späteren Zeitpunkt
+    ausgeführt werden, was in Thread-Pools extrem nützlich ist. Zudem ermöglicht die reine Objektform ein einfaches Logging.
+    Jeder ausgeführte Befehl kann in einer Datei gespeichert oder in der Konsole ausgegeben werden. Bei einem Systemabsturz lassen sich
+    die Aktionen aus dem Log wiederherstellen.
+
+    \subsection*{Prinzip und Handhabung}
+
+    Die Funktionsweise des Command-Patterns basiert auf dem Zusammenspiel von vier Akteuren. Diese sind Klient (Client),
+    Aufrufer (Invoker), Kommando (Command) und Empfänger (Receiver). Der Klient steuert den groben Ablauf. Er erzeugt ein
+    konkretes Kommando-Objekt. Dabei übergibt er dem Kommando den passenden Empfänger. Danach weist der Klient das fertige Kommando einem Aufrufer zu.
+
+    Der Aufrufer (Invoker) fungiert als reiner Sender der Anfrage. Er speichert eine Referenz auf das Kommando.
+    Der Aufrufer kennt jedoch nur das allgemeine Interface. Die genaue Funktion des Kommandos ist ihm unbekannt. Zu einem
+    festgelegten Zeitpunkt löst der Aufrufer die Aktion aus. Er ruft dafür die \texttt{execute()}-Methode des Kommandos auf.
+
+    Das Kommando (Command) ist das Bindeglied der Architektur. Es implementiert das Interface. In der \texttt{execute()}-Methode
+    ruft es die entsprechenden Funktionen des Empfängers auf. Das Kommando führt die komplexe Logik fast nie selbst aus.
+    Es delegiert die eigentliche Arbeit an den Receiver.
+
+    Der Empfänger (Receiver) enthält die echte Geschäftslogik. Er führt die tatsächlichen Berechnungen oder Zustandsänderungen durch.
+    Der Empfänger erhält den Arbeitsauftrag niemals direkt vom Aufrufer. Die Kommunikation läuft immer über das Kommando-Objekt.
+
+    Durch dieses Prinzip wird eine vollständige Entkopplung erreicht. Der Aufrufer erteilt lediglich den Befehl. Das Kommando
+    transportiert und übersetzt ihn. Der Empfänger führt ihn aus. Änderungen an der Logik des Empfängers haben somit keinerlei Auswirkungen auf den Aufrufer.
+    \cite{shvets_command,nystrom_command,gips_command}
+
+
+
+
     \section{Anwendungsfälle und Trade-offs}
     asd
+
+
     \section{Praxisbeispiel in Java}
     asd
+
+
     \section{Fazit}
     asd
 
@@ -179,7 +263,8 @@
     \pagenumbering{Roman} % Setzt die Nummerierung auf römnische Zahlen
     \setcounter{page}{3} % Setzt die Nummerierung auf 3
 
-%    \printbibliography
+    \section{Quellen}
+    \printbibliography
 
 
 \end{document}
