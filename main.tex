@@ -140,42 +140,17 @@
     jede Benutzeraktion als eigenständiges Befehlsobjekt gekapselt wird. Die UI kennt lediglich das jeweilige Kommando
     und muss keine Details über dessen konkrete Implementierung oder Ausführung besitzen.
 
-%
-%**2. Architektur und Funktionsweise**
-%
-%- **Beschreibung nach dem 4-Punkte-Schema:** Definition von Name, Problem, Lösung und Konsequenzen.
-%- **Prinzip und Handhabung:** Detaillierte Erklärung, wie Sender (Invoker), Kommando (Command) und Empfänger (Receiver) entkoppelt werden.
-%
-%**3. Anwendungsfälle (Use Cases) und Trade-offs**
-%
-%- **Konkrete Szenarien:** Analyse, wann das Muster sinnvoll angewendet wird (z. B. Undo-Mechanismen, Warteschlangen, Makros).
-%- **Vor- und Nachteile:** Kritische Bewertung der Stärken (z. B. hohe Flexibilität) und Schwächen (z. B. erhöhte Komplexität durch viele kleine Klassen).
-%- **Abgrenzung:** Vergleich mit ähnlichen Mustern und Diskussion möglicher Erweiterungen.
-%
-%**4. Praxisbeispiel in Java**
-%
-%- **Szenariowahl:** Vorstellung eines selbst gewählten Beispiels in Java.
-%- **Implementierung:** Darstellung und Erklärung des Musters anhand von konkretem Quellcode. *Tipp: Dieser Teil ist extrem wichtig, da die Programmierbeispiele 20% der Note für die Ausarbeitung ausmachen*.
-%
-%**5. Fazit**
-%
-%- **Zusammenfassung:** Die wichtigsten Erkenntnisse auf den Punkt gebracht.
-%- **Abschließende Bewertung:** Wann sich der Einsatz in der modernen Softwareentwicklung wirklich lohnt.
 
 
-    \section{Einleitung}
-    asd
-
-
-    \section{Architektur und Funktionsweise}
-
-    \subsection*{Das 4-Punkte-Schema}
+    \section*{Das 4-Punkte-Schema}
 
     \textbf{Name}\\
     Das Entwurfsmuster trägt den Namen Command-Pattern. Im deutschsprachigen Raum wird es als Kommando-Muster bezeichnet.
     Es gehört zur Kategorie der Verhaltensmuster (Behavioral Patterns).
 
     \textbf{Problem}\\
+%    TODO: Problemstellung von oben mergen
+
     In der Softwareentwicklung müssen Objekte oft Anfragen an andere Objekte senden. Ein Problem entsteht, wenn der Absender
     eng an den Empfänger gekoppelt ist. Ein klassisches Beispiel ist eine grafische Benutzeroberfläche. Ein Button soll einen
     Speichervorgang auslösen. Der Button sollte jedoch keine Details der Datenbanklogik kennen. Eine direkte Verknüpfung führt
@@ -183,7 +158,16 @@
     Dies verletzt grundlegende Prinzipien des sauberen Designs.
 
     \textbf{Lösung}\\
-    -$>$ Hier UML Diagramm einfügen
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=15cm]{img/uml-class-diagramm-command-pattern}
+    \caption{UML Klassendiagramm: Command Pattern}
+    \label{fig:uml_command_pattern}
+\end{figure}
+
+
 
     Das Command-Pattern löst dieses Problem durch eine objektorientierte Kapselung. Es verwandelt eine Anfrage oder Operation
     in ein eigenständiges Objekt. Dieses neue Objekt speichert alle nötigen Informationen über die auszuführende Aktion.
@@ -203,20 +187,38 @@
     Das Command-Pattern bietet durch seine entkoppelte Struktur eine ideale Basis für fortgeschrittene Architekturen.
 
     \textbf{Undo- und Redo-Mechanismen}\\
-    -$>$ Hier Ergänzungs UML Diagramm einfügen??
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=15cm]{img/undo-redo-class-diagramm}
+        \caption{UML Klassendiagramm: Command Pattern Erweiterung mit Undo/Redo}
+        \label{fig:uml_command_pattern_undo}
+    \end{figure}
+
     Aktionen können leicht rückgängig gemacht werden. Dafür wird das Interface um eine \texttt{undo()}-Methode ergänzt.
     Das Kommando speichert intern den Zustand vor der Ausführung. Bei einem Undo-Aufruf stellt es diesen Ursprungszustand
     wieder her. Redo-Operationen können das Kommando danach einfach erneut ausführen. Um einen komplexen Zustand wiederherzustellen,
     lässt sich das Command-Pattern mit dem Memento-Pattern kombinieren.
 
     \textbf{Makros (Befehlsketten)}\\
-    -$>$ Hier Ergänzungs UML Diagramm einfügen??
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=15cm]{img/makro-class-diagramm}
+        \caption{UML Klassendiagramm: Command Pattern Erweiterung mit Makros}
+        \label{fig:uml_command_pattern_makro}
+    \end{figure}
+
     Mehrere Einzelkommandos können zu sogenannten Makros gebündelt werden. Dies geschieht über ein übergeordnetes Makro-Kommando.
     Es implementiert ebenfalls das Standard-Interface. In seiner \texttt{execute()}-Methode arbeitet es nacheinander eine Liste
     von Teilkommandos ab.
 
     \textbf{Warteschlangen und Logging}\\
-    -$>$ Hier Ergänzungs UML Diagramm einfügen??
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=15cm]{img/logging-queuing-class-diagramm}
+        \caption{UML Klassendiagramm: Command Pattern Erweiterung durch Undo/Redo}
+        \label{fig:uml_command_pattern_queue}
+    \end{figure}
+
     Befehle lassen sich in einer Warteschlange (Queue) speichern. Dadurch können sie asynchron zu einem späteren Zeitpunkt
     ausgeführt werden, was in Thread-Pools extrem nützlich ist. Zudem ermöglicht die reine Objektform ein einfaches Logging.
     Jeder ausgeführte Befehl kann in einer Datei gespeichert oder in der Konsole ausgegeben werden. Bei einem Systemabsturz lassen sich
