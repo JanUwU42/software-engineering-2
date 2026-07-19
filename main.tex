@@ -144,11 +144,11 @@
 
     \section{Klassifizierung anhand des Vier-Punkte Schemas}
 
-    \textbf{Name}\\
+    \subsection{Name}
     Das Entwurfsmuster trägt den Namen Command-Pattern. Im deutschsprachigen Raum wird es als Kommando-Muster bezeichnet.
     Es gehört zur Kategorie der Verhaltensmuster (Behavioral Patterns).
 
-%    \textbf{Problem}\\
+    \subsection{Problem}
 %%    TODO: Problemstellung von oben mergen
 %
 %    In der Softwareentwicklung müssen Objekte oft Anfragen an andere Objekte senden. Ein Problem entsteht, wenn der Absender
@@ -157,8 +157,7 @@
 %    zu unflexiblem Code. Das System wird schwer wartbar. Wenn neue Funktionen hinzukommen, müssen bestehende Klassen verändert werden.
 %    Dies verletzt grundlegende Prinzipien des sauberen Designs.
 
-    \textbf{Lösung}\\
-
+    \subsection{Lösung}
 
     \begin{figure}[h!]
         \centering
@@ -169,25 +168,44 @@
 
 
 
-    Das Command-Pattern löst dieses Problem durch eine objektorientierte Kapselung. Es verwandelt eine Anfrage oder Operation
-    in ein eigenständiges Objekt. Dieses neue Objekt speichert alle nötigen Informationen über die auszuführende Aktion.
-    Der direkte Methodenaufruf wird somit abstrahiert. Die Architektur nutzt dafür ein gemeinsames Interface. Dieses Interface
-    schreibt in der Regel eine einzige Methode namens \texttt{execute()} vor. Der Sender der Anfrage arbeitet ab sofort nur
-    noch mit diesem Interface. Er muss die konkrete Implementierung nicht mehr kennen.
+    Das Command-Pattern löst die enge Kopplung zwischen Sender und Empfänger durch eine objektorientierte Kapselung.
+    Es transformiert eine Anfrage oder Operation in ein eigenständiges Objekt, das alle für die Ausführung notwendigen Informationen
+    in sich speichert. Dadurch wird der direkte Methodenaufruf abstrahiert. Die Architektur nutzt hierfür ein gemeinsames Interface,
+    welches eine einzige Methode namens \texttt{execute()} vorschreibt. Der Sender der Anfrage interagiert ab
+    sofort ausschließlich mit diesem Interface, wodurch er die konkrete Implementierung der dahinterliegenden Logik nicht mehr kennen muss.
 
-    \textbf{Konsequenzen}\\
+    Die Funktionsweise des Musters basiert auf dem strukturierten Zusammenspiel von vier zentralen Akteuren.
+
+    \begin{itemize}
+        \item \textbf{Klient (Client):} Der Klient steuert den initialen Ablauf. Er erzeugt das konkrete Kommando-Objekt
+        und injiziert dabei den passenden Empfänger. Anschließend weist er das fertig konfigurierte Kommando dem Aufrufer zu.
+        \item \textbf{Aufrufer (Invoker):} Der Aufrufer fungiert als reiner Auslöser der Anfrage und hält eine Referenz auf
+        das Command-Interface. Da er die konkrete Implementierung nicht kennt, ist ihm die genaue Funktion des Kommandos verborgen.
+        Zu einem festgelegten Zeitpunkt ruft er lediglich die \texttt{execute()}-Methode des Kommandos auf.
+        \item \textbf{Kommando (Command):} Das Kommando bildet das Bindeglied der Architektur und implementiert das gemeinsame
+        Interface. Es kapselt die Anfrage und delegiert in seiner \texttt{execute()}-Methode die eigentliche Arbeit an den Empfänger.
+        Das Kommando führt die komplexe Logik folglich fast nie selbst aus.
+        \item \textbf{Empfänger (Receiver):} Der Empfänger enthält die eigentliche Geschäftslogik und führt die tatsächlichen Berechnungen
+        oder Zustandsänderungen durch. Er kommuniziert niemals direkt mit dem Aufrufer, sondern erhält seine Arbeitsaufträge ausschließlich über das zwischengeschaltete Kommando-Objekt.
+    \end{itemize}
+
+    Durch diese klare Aufteilung wird eine vollständige Entkopplung der Komponenten erreicht: Der Aufrufer erteilt lediglich den Befehl, das Kommando transportiert sowie übersetzt ihn, und der Empfänger führt ihn schließlich aus. Nachträgliche Änderungen an der Geschäftslogik des Empfängers bleiben somit ohne jegliche Auswirkung auf den Aufrufer.
+
+    \subsection{Konsequenzen}
     Dieses Vorgehen bringt deutliche Vor- und Nachteile mit sich. Der größte Vorteil ist die starke Entkopplung der Komponenten.
     Absender und Empfänger sind völlig unabhängig. Neue Kommandos lassen sich jederzeit hinzufügen. Der bestehende Code bleibt
     dabei unberührt. Der primäre Nachteil ist die steigende Komplexität. Für jeden neuen Befehl muss eine eigene Klasse programmiert
     werden. Die reine Anzahl der Klassen wächst im System dadurch stark an. Ein weiterer großer Vorteil ist jedoch, dass diese
     Struktur mächtige funktionale Erweiterungen ermöglicht.
 
-    \subsection{Erweiterungsmöglichkeiten}
+    \newpage
+    \section{Erweiterungsmöglichkeiten}
 
     Das Command-Pattern bietet durch seine entkoppelte Struktur eine ideale Basis für fortgeschrittene Architekturen.
 
-    \textbf{Undo- und Redo-Mechanismen}\\
-    \begin{figure}[h!]
+    \subsection{Undo- und Redo-Mechanismen}
+
+    \begin{figure}[H]
         \centering
         \includegraphics[width=15cm]{img/undo-redo-class-diagramm}
         \caption{UML Klassendiagramm: Command Pattern Erweiterung mit Undo/Redo}
@@ -197,9 +215,9 @@
     Aktionen können leicht rückgängig gemacht werden. Dafür wird das Interface um eine \texttt{undo()}-Methode ergänzt.
     Das Kommando speichert intern den Zustand vor der Ausführung. Bei einem Undo-Aufruf stellt es diesen Ursprungszustand
     wieder her. Redo-Operationen können das Kommando danach einfach erneut ausführen. Um einen komplexen Zustand wiederherzustellen,
-    lässt sich das Command-Pattern mit dem Memento-Pattern\footnote{Vgl: \href{https://refactoring.guru/design-patterns/memento}{Memento-Pattern (letzter Aufruf: 19.07.2026)}} kombinieren.
+    lässt sich das Command-Pattern mit dem Memento-Pattern\footnote{Weiterführende Info: \href{https://refactoring.guru/design-patterns/memento}{Memento-Pattern (letzter Aufruf: 19.07.2026)}} kombinieren.
 
-    \textbf{Makros (Befehlsketten)}\\
+    \subsection{Makros (Befehlsketten)}
     \begin{figure}[h!]
         \centering
         \includegraphics[width=15cm]{img/makro-class-diagramm}
@@ -211,7 +229,7 @@
     Es implementiert ebenfalls das Standard-Interface. In seiner \texttt{execute()}-Methode arbeitet es nacheinander eine Liste
     von Teilkommandos ab.
 
-    \textbf{Warteschlangen und Logging}\\
+    \subsection{Warteschlangen und Logging}
     \begin{figure}[h!]
         \centering
         \includegraphics[width=15cm]{img/logging-queuing-class-diagramm}
@@ -223,26 +241,6 @@
     ausgeführt werden, was bei der Verwaltung von Thread-Pools von großen Vorteil ist. Zudem ermöglicht die reine Objektform ein einfaches Logging.
     Jeder ausgeführte Befehl kann in einer Datei gespeichert oder in der Konsole ausgegeben werden. Bei einem Systemabsturz lassen sich
     die Aktionen aus dem Log wiederherstellen.
-
-    \subsection{Prinzip und Handhabung}
-
-    Die Funktionsweise des Command-Patterns basiert auf dem Zusammenspiel von vier Akteuren. Diese sind Klient (Client),
-    Aufrufer (Invoker), Kommando (Command) und Empfänger (Receiver). Der Klient steuert den groben Ablauf. Er erzeugt ein
-    konkretes Kommando-Objekt. Dabei übergibt er dem Kommando den passenden Empfänger. Danach weist der Klient das fertige Kommando einem Aufrufer zu.
-
-    Der Aufrufer (Invoker) fungiert als reiner Sender der Anfrage. Er speichert eine Referenz auf das Kommando.
-    Der Aufrufer kennt jedoch nur das allgemeine Interface. Die genaue Funktion des Kommandos ist ihm unbekannt. Zu einem
-    festgelegten Zeitpunkt löst der Aufrufer die Aktion aus. Er ruft dafür die \texttt{execute()}-Methode des Kommandos auf.
-
-    Das Kommando (Command) ist das Bindeglied der Architektur. Es implementiert das Interface. In der \texttt{execute()}-Methode
-    ruft es die entsprechenden Funktionen des Empfängers auf. Das Kommando führt die komplexe Logik fast nie selbst aus.
-    Es delegiert die eigentliche Arbeit an den Receiver.
-
-    Der Empfänger (Receiver) enthält die echte Geschäftslogik. Er führt die tatsächlichen Berechnungen oder Zustandsänderungen durch.
-    Der Empfänger erhält den Arbeitsauftrag niemals direkt vom Aufrufer. Die Kommunikation läuft immer über das Kommando-Objekt.
-
-    Durch dieses Prinzip wird eine vollständige Entkopplung erreicht. Der Aufrufer erteilt lediglich den Befehl. Das Kommando
-    transportiert und übersetzt ihn. Der Empfänger führt ihn aus. Änderungen an der Logik des Empfängers haben somit keinerlei Auswirkungen auf den Aufrufer.
 
     \section{Anwendungsfälle und Trade-offs}
     asd
