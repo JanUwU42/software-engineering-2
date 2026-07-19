@@ -9,6 +9,38 @@
 \usepackage{booktabs}
 \usepackage{float}
 \usepackage[all]{hypcap}
+\usepackage{listings} % Quellcode-Listings
+\usepackage{xcolor}
+
+% Farbschema für die Java-Listings
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
+
+\lstdefinestyle{javastyle}{
+    language=Java,
+    backgroundcolor=\color{backcolour},
+    basicstyle=\ttfamily\footnotesize,
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    stringstyle=\color{codepurple},
+    numberstyle=\tiny\color{codegray},
+    numbers=left,
+    numbersep=8pt,
+    frame=single,
+    breaklines=true,
+    breakatwhitespace=false,
+    keepspaces=true,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    captionpos=b,
+    xleftmargin=16pt,
+    framexleftmargin=16pt
+}
+\lstset{style=javastyle}
 
 
 \usepackage{helvet} % Set font to Arial
@@ -247,7 +279,114 @@
 
 
     \section{Praxisbeispiel in Java}
-    asd
+
+    Zur Veranschaulichung wird das Command-Pattern nachfolgend anhand eines bewusst schlank gehaltenen,
+    aber vollständigen Beispiels in Java umgesetzt. Als Szenario dient eine Fernbedienung, die eine Lampe
+    ein- und ausschaltet. Trotz seiner Einfachheit deckt das Beispiel alle vier zuvor beschriebenen Rollen
+    des Musters ab (vgl. Abbildung~\ref{fig:uml_command_pattern}) und lässt sich unmittelbar auf diese abbilden:
+
+    \begin{itemize}
+        \item \textbf{Kommando (Command):} das Interface \texttt{Command},
+        \item \textbf{Empfänger (Receiver):} die Klasse \texttt{Light},
+        \item \textbf{Konkrete Kommandos:} \texttt{LightOnCommand} und \texttt{LightOffCommand},
+        \item \textbf{Aufrufer (Invoker):} die Klasse \texttt{RemoteControl},
+        \item \textbf{Klient (Client):} die Klasse \texttt{Main}.
+    \end{itemize}
+
+    Den Ausgangspunkt bildet das gemeinsame Interface \texttt{Command}. Es schreibt mit \texttt{execute()}
+    genau eine Methode vor und stellt damit die einheitliche Schnittstelle dar, über die sämtliche Befehle
+    ausgelöst werden.
+
+    \begin{lstlisting}[caption={Das Kommando-Interface \texttt{Command}}, label={lst:command}]
+// Kommando-Interface
+public interface Command {
+    void execute();
+}
+    \end{lstlisting}
+
+    Der Empfänger enthält die eigentliche Geschäftslogik. Im Beispiel ist dies die Klasse \texttt{Light},
+    welche die konkreten Operationen zum Ein- und Ausschalten bereitstellt. Sie besitzt keinerlei Kenntnis
+    vom Command-Pattern und könnte unverändert auch ohne dieses verwendet werden.
+
+    \begin{lstlisting}[caption={Der Empfänger \texttt{Light}}, label={lst:light}]
+// Empfänger - führt die eigentliche Arbeit aus
+public class Light {
+    public void on()  { System.out.println("Light is ON"); }
+    public void off() { System.out.println("Light is OFF"); }
+}
+    \end{lstlisting}
+
+    Die konkreten Kommandos kapseln jeweils eine Anfrage an den Empfänger. Sie implementieren das Interface
+    \texttt{Command} und halten eine Referenz auf das \texttt{Light}-Objekt. In der \texttt{execute()}-Methode
+    delegieren sie die Arbeit an den Empfänger, anstatt die Logik selbst auszuführen.
+
+    \begin{lstlisting}[caption={Die konkreten Kommandos \texttt{LightOnCommand} und \texttt{LightOffCommand}}, label={lst:concrete}]
+// Konkretes Kommando - kapselt "Licht einschalten" als Objekt
+public class LightOnCommand implements Command {
+    private final Light light;
+
+    public LightOnCommand(Light light) { this.light = light; }
+
+    public void execute() { light.on(); }
+}
+
+// Konkretes Kommando - kapselt "Licht ausschalten" als Objekt
+public class LightOffCommand implements Command {
+    private final Light light;
+
+    public LightOffCommand(Light light) { this.light = light; }
+
+    public void execute() { light.off(); }
+}
+    \end{lstlisting}
+
+    Der Aufrufer löst Befehle aus, ohne deren konkrete Implementierung zu kennen. Die Klasse
+    \texttt{RemoteControl} hält lediglich eine Referenz auf das \texttt{Command}-Interface und ruft bei
+    einem Tastendruck dessen \texttt{execute()}-Methode auf. Welches Kommando dabei ausgeführt wird und was
+    dieses bewirkt, bleibt dem Aufrufer verborgen.
+
+    \begin{lstlisting}[caption={Der Aufrufer \texttt{RemoteControl}}, label={lst:invoker}]
+// Aufrufer - löst Kommandos aus, ohne ihre Wirkung zu kennen
+public class RemoteControl {
+    private Command command;
+
+    public void setCommand(Command c) { command = c; }
+    public void pressButton() { command.execute(); }
+}
+    \end{lstlisting}
+
+    Der Klient verknüpft schließlich die Komponenten miteinander. Er erzeugt den Empfänger, instanziiert
+    die konkreten Kommandos mit diesem Empfänger und übergibt sie dem Aufrufer. Anschließend genügt ein
+    Aufruf von \texttt{pressButton()}, um den jeweiligen Befehl auszuführen.
+
+    \begin{lstlisting}[caption={Der Klient \texttt{Main}}, label={lst:client}]
+public class Main {
+    public static void main(String[] args) {
+        Light light = new Light();
+        RemoteControl remote = new RemoteControl();
+
+        remote.setCommand(new LightOnCommand(light));
+        remote.pressButton();
+
+        remote.setCommand(new LightOffCommand(light));
+        remote.pressButton();
+    }
+}
+    \end{lstlisting}
+
+    Die Ausführung des Programms erzeugt die folgende Ausgabe:
+
+    \begin{lstlisting}[language={}, caption={Konsolenausgabe des Beispiels}, label={lst:output}]
+Light is ON
+Light is OFF
+    \end{lstlisting}
+
+    Das Beispiel verdeutlicht die zentrale Eigenschaft des Musters: Die Klasse \texttt{RemoteControl}
+    besitzt keinerlei Wissen über die Klasse \texttt{Light}. Der Aufrufer kommuniziert ausschließlich mit
+    dem \texttt{Command}-Interface, während die eigentliche Logik im Empfänger gekapselt bleibt. Soll die
+    Fernbedienung künftig ein anderes Gerät steuern, muss lediglich ein neues konkretes Kommando ergänzt
+    werden. Weder der Aufrufer noch der bestehende Code müssen dafür verändert werden, was die im vorherigen
+    Abschnitt beschriebene Entkopplung praktisch belegt.
 
 
     \section{Fazit}
