@@ -92,6 +92,7 @@
     \setcounter{page}{1} % Startet die Nummerierung bei 1
     \setcounter{section}{0} % Setzt den Abschnittszähler auf 0
 
+
     \section{Einleitung}
 
     \subsection{Überblick}
@@ -134,38 +135,37 @@
 
     Zur Veranschaulichung kann eine Textverarbeitungsanwendung betrachtet werden. Dort besitzt die Benutzeroberfläche
     unter anderem die Buttons \textit{Speichern}, \textit{Drucken} und \textit{Rückgängig}. Jeder Button soll eine
-    bestimmte Aktion auslösen, unabhängig davon, ob diese über einen Mausklick, einen Menüeintrag oder eine 
+    bestimmte Aktion auslösen, unabhängig davon, ob diese über einen Mausklick, einen Menüeintrag oder eine
     Tastenkombination aktiviert wird. Um diese Flexibilität zu erreichen, muss die Benutzeroberfläche von der
     eigentlichen Ausführung der Aktionen entkoppelt werden. Genau an dieser Stelle setzt das Command Pattern an, indem
     jede Benutzeraktion als eigenständiges Befehlsobjekt gekapselt wird. Die UI kennt lediglich das jeweilige Kommando
     und muss keine Details über dessen konkrete Implementierung oder Ausführung besitzen.
 
 
-
-    \section*{Das 4-Punkte-Schema}
+    \section{Klassifizierung anhand des Vier-Punkte Schemas}
 
     \textbf{Name}\\
     Das Entwurfsmuster trägt den Namen Command-Pattern. Im deutschsprachigen Raum wird es als Kommando-Muster bezeichnet.
     Es gehört zur Kategorie der Verhaltensmuster (Behavioral Patterns).
 
-    \textbf{Problem}\\
-%    TODO: Problemstellung von oben mergen
-
-    In der Softwareentwicklung müssen Objekte oft Anfragen an andere Objekte senden. Ein Problem entsteht, wenn der Absender
-    eng an den Empfänger gekoppelt ist. Ein klassisches Beispiel ist eine grafische Benutzeroberfläche. Ein Button soll einen
-    Speichervorgang auslösen. Der Button sollte jedoch keine Details der Datenbanklogik kennen. Eine direkte Verknüpfung führt
-    zu unflexiblem Code. Das System wird schwer wartbar. Wenn neue Funktionen hinzukommen, müssen bestehende Klassen verändert werden.
-    Dies verletzt grundlegende Prinzipien des sauberen Designs.
+%    \textbf{Problem}\\
+%%    TODO: Problemstellung von oben mergen
+%
+%    In der Softwareentwicklung müssen Objekte oft Anfragen an andere Objekte senden. Ein Problem entsteht, wenn der Absender
+%    eng an den Empfänger gekoppelt ist. Ein klassisches Beispiel ist eine grafische Benutzeroberfläche. Ein Button soll einen
+%    Speichervorgang auslösen. Der Button sollte jedoch keine Details der Datenbanklogik kennen. Eine direkte Verknüpfung führt
+%    zu unflexiblem Code. Das System wird schwer wartbar. Wenn neue Funktionen hinzukommen, müssen bestehende Klassen verändert werden.
+%    Dies verletzt grundlegende Prinzipien des sauberen Designs.
 
     \textbf{Lösung}\\
 
 
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=15cm]{img/uml-class-diagramm-command-pattern}
-    \caption{UML Klassendiagramm: Command Pattern}
-    \label{fig:uml_command_pattern}
-\end{figure}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=15cm]{img/uml-class-diagramm-command-pattern}
+        \caption{UML Klassendiagramm: Command Pattern}
+        \label{fig:uml_command_pattern}
+    \end{figure}
 
 
 
@@ -182,7 +182,7 @@
     werden. Die reine Anzahl der Klassen wächst im System dadurch stark an. Ein weiterer großer Vorteil ist jedoch, dass diese
     Struktur mächtige funktionale Erweiterungen ermöglicht.
 
-    \subsection*{Erweiterungsmöglichkeiten}
+    \subsection{Erweiterungsmöglichkeiten}
 
     Das Command-Pattern bietet durch seine entkoppelte Struktur eine ideale Basis für fortgeschrittene Architekturen.
 
@@ -197,7 +197,7 @@
     Aktionen können leicht rückgängig gemacht werden. Dafür wird das Interface um eine \texttt{undo()}-Methode ergänzt.
     Das Kommando speichert intern den Zustand vor der Ausführung. Bei einem Undo-Aufruf stellt es diesen Ursprungszustand
     wieder her. Redo-Operationen können das Kommando danach einfach erneut ausführen. Um einen komplexen Zustand wiederherzustellen,
-    lässt sich das Command-Pattern mit dem Memento-Pattern kombinieren.
+    lässt sich das Command-Pattern mit dem Memento-Pattern\footnote{Vgl: \href{https://refactoring.guru/design-patterns/memento}{Memento-Pattern (letzter Aufruf: 19.07.2026)}} kombinieren.
 
     \textbf{Makros (Befehlsketten)}\\
     \begin{figure}[h!]
@@ -215,16 +215,16 @@
     \begin{figure}[h!]
         \centering
         \includegraphics[width=15cm]{img/logging-queuing-class-diagramm}
-        \caption{UML Klassendiagramm: Command Pattern Erweiterung durch Undo/Redo}
+        \caption{UML Klassendiagramm: Command Pattern Erweiterung durch Queue und Logging}
         \label{fig:uml_command_pattern_queue}
     \end{figure}
 
     Befehle lassen sich in einer Warteschlange (Queue) speichern. Dadurch können sie asynchron zu einem späteren Zeitpunkt
-    ausgeführt werden, was in Thread-Pools extrem nützlich ist. Zudem ermöglicht die reine Objektform ein einfaches Logging.
+    ausgeführt werden, was bei der Verwaltung von Thread-Pools von großen Vorteil ist. Zudem ermöglicht die reine Objektform ein einfaches Logging.
     Jeder ausgeführte Befehl kann in einer Datei gespeichert oder in der Konsole ausgegeben werden. Bei einem Systemabsturz lassen sich
     die Aktionen aus dem Log wiederherstellen.
 
-    \subsection*{Prinzip und Handhabung}
+    \subsection{Prinzip und Handhabung}
 
     Die Funktionsweise des Command-Patterns basiert auf dem Zusammenspiel von vier Akteuren. Diese sind Klient (Client),
     Aufrufer (Invoker), Kommando (Command) und Empfänger (Receiver). Der Klient steuert den groben Ablauf. Er erzeugt ein
@@ -243,10 +243,6 @@
 
     Durch dieses Prinzip wird eine vollständige Entkopplung erreicht. Der Aufrufer erteilt lediglich den Befehl. Das Kommando
     transportiert und übersetzt ihn. Der Empfänger führt ihn aus. Änderungen an der Logik des Empfängers haben somit keinerlei Auswirkungen auf den Aufrufer.
-    \cite{shvets_command,nystrom_command,gips_command}
-
-
-
 
     \section{Anwendungsfälle und Trade-offs}
     asd
@@ -265,7 +261,7 @@
     \pagenumbering{Roman} % Setzt die Nummerierung auf römnische Zahlen
     \setcounter{page}{3} % Setzt die Nummerierung auf 3
 
-    \section{Quellen}
+    \notecite{*}
     \printbibliography
 
 
