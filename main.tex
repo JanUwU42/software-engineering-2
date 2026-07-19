@@ -95,6 +95,7 @@
 
     \section{Einleitung}
 
+
     \subsection{Überblick}
     Die Entwicklung moderner Softwaresysteme erfordert Lösungen, die sowohl flexibel als auch wartbar und erweiterbar
     sind. Entwurfsmuster (Design Patterns) stellen hierfür bewährte Konzepte bereit, indem sie wiederkehrende Probleme
@@ -109,11 +110,22 @@
     Softwareentwicklung Anwendung, etwa bei grafischen Benutzeroberflächen, Undo/Redo-Funktionalität oder der
     Verarbeitung von Befehlswarteschlangen.\footnote{\cite{schiele-command}}
 
-    Ziel dieser Hausarbeit ist es, das Command Pattern vorzustellen und dessen grundlegendes Konzept zu erläutern.
-    Hierzu werden zunächst die Funktionsweise sowie die beteiligten Komponenten des Entwurfsmusters beschrieben.
-    Anschließend werden typische Einsatzgebiete vorgestellt und anhand einer beispielhaften Implementierung die
-    praktische Anwendung des Musters verdeutlicht. Ergänzend werden UML-Diagramme verwendet, um den strukturellen
-    Aufbau sowie das Zusammenspiel der beteiligten Klassen anschaulich darzustellen.\footnote{\cite{gamma1995design}}
+    Ziel dieser Hausarbeit ist es, das Command Pattern systematisch zu analysieren und dessen Funktionsweise sowie
+    Einsatzmöglichkeiten zu erläutern. Zunächst wird das Entwurfsmuster anhand des Vier-Punkte-Schemas mit den
+    Aspekten \textit{Name}, \textit{Problem}, \textit{Lösung} und \textit{Konsequenzen} vorgestellt. Anschließend
+    werden einige Erweiterungsszenarien erklärt und mithilfe von UML-Diagrammen tiefer veranschaulicht. Danach wird die
+    praktische Umsetzung des Command Patterns anhand einer beispielhaften Implementierung erläutert, bevor mit einem
+    kurzen Fazit abgeschlossen wird.
+
+
+
+
+
+    \section{Klassifizierung anhand des Vier-Punkte Schemas}
+
+    \subsection{Name}
+    Das Entwurfsmuster trägt den Namen Command-Pattern. Im deutschsprachigen Raum wird es als Kommando-Muster bezeichnet.
+    Es gehört zur Kategorie der Verhaltensmuster (Behavioral Patterns).
 
     \subsection{Problemstellung}
     In vielen Anwendungen werden Benutzeraktionen direkt mit der auszuführenden Programmlogik verknüpft.
@@ -140,22 +152,7 @@
     eigentlichen Ausführung der Aktionen entkoppelt werden. Genau an dieser Stelle setzt das Command Pattern an, indem
     jede Benutzeraktion als eigenständiges Befehlsobjekt gekapselt wird. Die UI kennt lediglich das jeweilige Kommando
     und muss keine Details über dessen konkrete Implementierung oder Ausführung besitzen.
-
-
-    \section{Klassifizierung anhand des Vier-Punkte Schemas}
-
-    \subsection{Name}
-    Das Entwurfsmuster trägt den Namen Command-Pattern. Im deutschsprachigen Raum wird es als Kommando-Muster bezeichnet.
-    Es gehört zur Kategorie der Verhaltensmuster (Behavioral Patterns).
-
-    \subsection{Problem}
-%%    TODO: Problemstellung von oben mergen
-%
-%    In der Softwareentwicklung müssen Objekte oft Anfragen an andere Objekte senden. Ein Problem entsteht, wenn der Absender
-%    eng an den Empfänger gekoppelt ist. Ein klassisches Beispiel ist eine grafische Benutzeroberfläche. Ein Button soll einen
-%    Speichervorgang auslösen. Der Button sollte jedoch keine Details der Datenbanklogik kennen. Eine direkte Verknüpfung führt
-%    zu unflexiblem Code. Das System wird schwer wartbar. Wenn neue Funktionen hinzukommen, müssen bestehende Klassen verändert werden.
-%    Dies verletzt grundlegende Prinzipien des sauberen Designs.
+    \footnote{\cite{refactoringguru_command}}
 
     \subsection{Lösung}
 
