@@ -206,7 +206,7 @@
     Es transformiert eine Anfrage oder Operation in ein eigenständiges Objekt, das alle für die Ausführung notwendigen Informationen
     in sich speichert. Dadurch wird der direkte Methodenaufruf abstrahiert. Die Architektur nutzt hierfür ein gemeinsames Interface,
     welches eine einzige Methode namens \texttt{execute()} vorschreibt. Der Sender der Anfrage interagiert ab
-    sofort ausschließlich mit diesem Interface, wodurch er die konkrete Implementierung der dahinterliegenden Logik nicht mehr kennen muss.
+    sofort ausschließlich mit diesem Interface, wodurch er die konkrete Implementierung der dahinterliegenden Logik nicht mehr kennen muss.\footnote{\cite{gamma1995design}}
 
     Die Funktionsweise des Musters basiert auf dem strukturierten Zusammenspiel von vier zentralen Akteuren.
 
@@ -226,11 +226,14 @@
     Durch diese klare Aufteilung wird eine vollständige Entkopplung der Komponenten erreicht: Der Aufrufer erteilt lediglich den Befehl, das Kommando transportiert sowie übersetzt ihn, und der Empfänger führt ihn schließlich aus. Nachträgliche Änderungen an der Geschäftslogik des Empfängers bleiben somit ohne jegliche Auswirkung auf den Aufrufer.
 
     \subsection{Konsequenzen}
-    Dieses Vorgehen bringt deutliche Vor- und Nachteile mit sich. Der größte Vorteil ist die starke Entkopplung der Komponenten.
-    Absender und Empfänger sind völlig unabhängig. Neue Kommandos lassen sich jederzeit hinzufügen. Der bestehende Code bleibt
-    dabei unberührt. Der primäre Nachteil ist die steigende Komplexität. Für jeden neuen Befehl muss eine eigene Klasse programmiert
-    werden. Die reine Anzahl der Klassen wächst im System dadurch stark an. Ein weiterer großer Vorteil ist jedoch, dass diese
-    Struktur mächtige funktionale Erweiterungen ermöglicht.
+    Dieses Vorgehen bringt deutliche Vor- und Nachteile mit sich. Der größte Vorteil ist die starke
+    Entkopplung der Komponenten: Absender und Empfänger sind völlig unabhängig, sodass neue Kommandos jederzeit ergänzt werden können,
+    ohne den bestehenden Code zu verändern. Da jeder Befehl ein eigenständiges Objekt ist, lässt er sich zudem isoliert testen. Der
+    primäre Nachteil ist die steigende Komplexität, da für jeden Befehl eine eigene Klasse angelegt werden muss und die Anzahl der
+    Klassen im System dadurch stark wächst. Hinzu kommt konkreter Zusatzaufwand in den Erweiterungen: Undo-/Redo-Stacks halten
+    vergangene Zustände im Speicher vor, und bei der nebenläufigen Abarbeitung von Befehlswarteschlangen müssen Fragen der
+    Thread-Sicherheit beachtet werden. Ein wesentlicher Vorteil bleibt jedoch, dass diese Struktur überhaupt erst solche mächtigen
+    funktionalen Erweiterungen ermöglicht.
 
     \newpage
     \section{Erweiterungsmöglichkeiten}
@@ -276,12 +279,24 @@
     Jeder ausgeführte Befehl kann in einer Datei gespeichert oder in der Konsole ausgegeben werden. Bei einem Systemabsturz lassen sich
     die Aktionen aus dem Log wiederherstellen.
 
+    \section{Abgrenzung und moderne Alternativen}
+
+    Strukturell ähnelt das Command-Pattern dem Strategy-Pattern: Beide kapseln Verhalten hinter einem Interface.
+    Die Intention unterscheidet sich jedoch. Das Strategy-Pattern kapselt \textit{austauschbare Algorithmen} für
+    ein und dieselbe Aufgabe, während das Command-Pattern eine \textit{vollständige Anfrage} inklusive Empfänger
+    und Parametern als Objekt kapselt, um sie zu speichern, weiterzugeben oder rückgängig zu machen.\footnote{\cite{gamma1995design}}
+
+    In modernen Java-Versionen (ab Java~8) lassen sich einfache Kommandos ohne Zustand auch als Lambda-Ausdruck
+    formulieren, da das \texttt{Command}-Interface ein funktionales Interface ist. Dies reduziert den in den
+    Konsequenzen genannten Klassenwildwuchs. Sobald ein Kommando jedoch zusätzliche Funktionen wie \texttt{undo()}
+    oder internen Zustand benötigt, bleibt die klassenbasierte Umsetzung überlegen.
+
     \section{Praxisbeispiel in Java}
 
-    Zur Veranschaulichung wird das Command-Pattern nachfolgend anhand eines bewusst schlank gehaltenen,
-    aber vollständigen Beispiels in Java umgesetzt. Als Szenario dient eine Fernbedienung, die eine Lampe
-    ein- und ausschaltet. Trotz seiner Einfachheit deckt das Beispiel alle vier zuvor beschriebenen Rollen
-    des Musters ab (vgl. Abbildung~\ref{fig:uml_command_pattern}) und lässt sich unmittelbar auf diese abbilden:
+    Zur Veranschaulichung wird das Command-Pattern nachfolgend anhand eines kompakten, aber vollständigen Beispiels
+    in Java umgesetzt. Als Szenario dient eine Fernbedienung, die eine Lampe ein- und ausschaltet. Das Beispiel deckt
+    alle vier zuvor beschriebenen Rollen des Musters ab (vgl. Abbildung~\ref{fig:uml_command_pattern}) und greift
+    zusätzlich die in Abschnitt~\ref{fig:uml_command_pattern_undo} vorgestellte Undo-Funktion auf:
 
     \begin{itemize}
         \item \textbf{Kommando (Command):} das Interface \texttt{Command},
@@ -291,14 +306,15 @@
         \item \textbf{Klient (Client):} die Klasse \texttt{Main}.
     \end{itemize}
 
-    Den Ausgangspunkt bildet das gemeinsame Interface \texttt{Command}. Es schreibt mit \texttt{execute()}
-    genau eine Methode vor und stellt damit die einheitliche Schnittstelle dar, über die sämtliche Befehle
-    ausgelöst werden.
+    Den Ausgangspunkt bildet das gemeinsame Interface \texttt{Command}. Es schreibt mit \texttt{execute()} das
+    Auslösen und mit \texttt{undo()} das Rückgängigmachen eines Befehls vor und stellt damit die einheitliche
+    Schnittstelle dar, über die sämtliche Kommandos angesprochen werden.
 
     \begin{lstlisting}[caption={Das Kommando-Interface \texttt{Command}}, label={lst:command}]
 // Kommando-Interface
 public interface Command {
     void execute();
+    void undo();
 }
     \end{lstlisting}
 
@@ -315,8 +331,8 @@ public class Light {
     \end{lstlisting}
 
     Die konkreten Kommandos kapseln jeweils eine Anfrage an den Empfänger. Sie implementieren das Interface
-    \texttt{Command} und halten eine Referenz auf das \texttt{Light}-Objekt. In der \texttt{execute()}-Methode
-    delegieren sie die Arbeit an den Empfänger, anstatt die Logik selbst auszuführen.
+    \texttt{Command} und halten eine Referenz auf das \texttt{Light}-Objekt. In \texttt{execute()} delegieren sie
+    die Arbeit an den Empfänger, während \texttt{undo()} die jeweils gegenteilige Operation auslöst.
 
     \begin{lstlisting}[caption={Die konkreten Kommandos \texttt{LightOnCommand} und \texttt{LightOffCommand}}, label={lst:concrete}]
 // Konkretes Kommando - kapselt "Licht einschalten" als Objekt
@@ -326,6 +342,7 @@ public class LightOnCommand implements Command {
     public LightOnCommand(Light light) { this.light = light; }
 
     public void execute() { light.on(); }
+    public void undo()    { light.off(); }
 }
 
 // Konkretes Kommando - kapselt "Licht ausschalten" als Objekt
@@ -335,27 +352,32 @@ public class LightOffCommand implements Command {
     public LightOffCommand(Light light) { this.light = light; }
 
     public void execute() { light.off(); }
+    public void undo()    { light.on(); }
 }
     \end{lstlisting}
 
     Der Aufrufer löst Befehle aus, ohne deren konkrete Implementierung zu kennen. Die Klasse
-    \texttt{RemoteControl} hält lediglich eine Referenz auf das \texttt{Command}-Interface und ruft bei
-    einem Tastendruck dessen \texttt{execute()}-Methode auf. Welches Kommando dabei ausgeführt wird und was
-    dieses bewirkt, bleibt dem Aufrufer verborgen.
+    \texttt{RemoteControl} hält eine Referenz auf das \texttt{Command}-Interface und ruft bei einem Tastendruck
+    dessen \texttt{execute()}-Methode auf. Zusätzlich merkt sie sich den zuletzt ausgeführten Befehl, sodass
+    dieser über \texttt{pressUndo()} rückgängig gemacht werden kann. Welches Kommando dabei ausgeführt wird und
+    was es bewirkt, bleibt dem Aufrufer verborgen.
 
     \begin{lstlisting}[caption={Der Aufrufer \texttt{RemoteControl}}, label={lst:invoker}]
 // Aufrufer - löst Kommandos aus, ohne ihre Wirkung zu kennen
 public class RemoteControl {
     private Command command;
+    private Command lastCommand;
 
     public void setCommand(Command c) { command = c; }
-    public void pressButton() { command.execute(); }
+    public void pressButton() { command.execute(); lastCommand = command; }
+    public void pressUndo()   { lastCommand.undo(); }
 }
     \end{lstlisting}
 
     Der Klient verknüpft schließlich die Komponenten miteinander. Er erzeugt den Empfänger, instanziiert
-    die konkreten Kommandos mit diesem Empfänger und übergibt sie dem Aufrufer. Anschließend genügt ein
-    Aufruf von \texttt{pressButton()}, um den jeweiligen Befehl auszuführen.
+    die konkreten Kommandos mit diesem Empfänger und übergibt sie dem Aufrufer. Nach dem Ein- und Ausschalten
+    macht ein abschließender Aufruf von \texttt{pressUndo()} den zuletzt ausgeführten Befehl rückgängig und
+    schaltet die Lampe wieder ein.
 
     \begin{lstlisting}[caption={Der Klient \texttt{Main}}, label={lst:client}]
 public class Main {
@@ -368,6 +390,8 @@ public class Main {
 
         remote.setCommand(new LightOffCommand(light));
         remote.pressButton();
+
+        remote.pressUndo();
     }
 }
     \end{lstlisting}
@@ -377,6 +401,7 @@ public class Main {
     \begin{lstlisting}[language={}, caption={Konsolenausgabe des Beispiels}, label={lst:output}]
 Light is ON
 Light is OFF
+Light is ON
     \end{lstlisting}
 
     Das Beispiel verdeutlicht die zentrale Eigenschaft des Musters: Die Klasse \texttt{RemoteControl}
@@ -384,13 +409,14 @@ Light is OFF
     dem \texttt{Command}-Interface, während die eigentliche Logik im Empfänger gekapselt bleibt. Soll die
     Fernbedienung künftig ein anderes Gerät steuern, muss lediglich ein neues konkretes Kommando ergänzt
     werden. Weder der Aufrufer noch der bestehende Code müssen dafür verändert werden, was die im vorherigen
-    Abschnitt beschriebene Entkopplung praktisch belegt.
+    Abschnitt beschriebene Entkopplung praktisch belegt. Dasselbe Prinzip findet sich in etablierten Frameworks
+    wieder, etwa in \texttt{javax.swing.Action}, \texttt{QAction} in Qt oder den Actions in Redux.
 
 
     \section{Fazit}
     Das Command Pattern ist ein bewährtes Entwurfsmuster zur Entkopplung von aufrufenden und ausführenden Komponenten. Durch die Kapselung von Befehlen als eigenständige Objekte erhöht es die Flexibilität, Wartbarkeit und Erweiterbarkeit von Softwaresystemen. Gleichzeitig bildet es die Grundlage für weiterführende Funktionen wie Undo-/Redo-Mechanismen, Makros oder die Verarbeitung von Befehlswarteschlangen.
 
-    Die Analyse anhand des Vier-Punkte-Schemas hat die Funktionsweise sowie die Vor- und Nachteile des Musters verdeutlicht. Das anschließende Java-Beispiel zeigte, wie die theoretischen Konzepte in einer praktischen Implementierung umgesetzt werden können. Insgesamt eignet sich das Command Pattern insbesondere für Anwendungen, in denen Befehle flexibel verwaltet, erweitert oder zeitlich unabhängig ausgeführt werden sollen. Trotz des erhöhten Implementierungsaufwands überwiegen in vielen Anwendungsfällen die Vorteile einer klar strukturierten und entkoppelten Softwarearchitektur.
+    Die Analyse anhand des Vier-Punkte-Schemas hat die Funktionsweise sowie die Vor- und Nachteile des Musters verdeutlicht. Das anschließende Java-Beispiel zeigte, wie die theoretischen Konzepte in einer praktischen Implementierung umgesetzt werden können. Insgesamt eignet sich das Command Pattern insbesondere für Anwendungen, in denen Befehle flexibel verwaltet, erweitert oder zeitlich unabhängig ausgeführt werden sollen. Trotz des erhöhten Implementierungsaufwands überwiegen in vielen Anwendungsfällen die Vorteile einer klar strukturierten und entkoppelten Softwarearchitektur. Nach eigener Einschätzung sollte das Muster jedoch bewusst eingesetzt werden: Sein voller Nutzen entfaltet sich erst, wenn Anforderungen wie Undo/Redo, Makros oder Warteschlangen tatsächlich bestehen. Für einfache, einmalige Aktionen stellt der resultierende Klassenaufwand hingegen eine Überkonstruktion dar, die sich mit funktionalen Ansätzen schlanker lösen lässt.
 
 
     \newpage
