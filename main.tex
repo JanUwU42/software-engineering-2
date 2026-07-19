@@ -226,7 +226,7 @@
     Durch diese klare Aufteilung wird eine vollständige Entkopplung der Komponenten erreicht: Der Aufrufer erteilt lediglich den Befehl, das Kommando transportiert sowie übersetzt ihn, und der Empfänger führt ihn schließlich aus. Nachträgliche Änderungen an der Geschäftslogik des Empfängers bleiben somit ohne jegliche Auswirkung auf den Aufrufer.
 
     \subsection{Konsequenzen}
-    Dieses Vorgehen bringt deutliche Vor- und Nachteile mit sich.\footnote{\cite{gamma1995design}} Der größte Vorteil ist die starke
+    Dieses Vorgehen bringt deutliche Vor- und Nachteile mit sich. Der größte Vorteil ist die starke
     Entkopplung der Komponenten: Absender und Empfänger sind völlig unabhängig, sodass neue Kommandos jederzeit ergänzt werden können,
     ohne den bestehenden Code zu verändern. Da jeder Befehl ein eigenständiges Objekt ist, lässt er sich zudem isoliert testen. Der
     primäre Nachteil ist die steigende Komplexität, da für jeden Befehl eine eigene Klasse angelegt werden muss und die Anzahl der
