@@ -8,5 +8,7 @@ public class Main {
 
         remote.setCommand(new LightOffCommand(light));
         remote.pressButton();
+
+        remote.pressUndo();
     }
 }
