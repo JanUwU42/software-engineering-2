@@ -38,7 +38,11 @@
     tabsize=4,
     captionpos=b,
     xleftmargin=16pt,
-    framexleftmargin=16pt
+    framexleftmargin=16pt,
+    literate=%
+        {Ä}{{\"A}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+        {ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+        {ß}{{\ss}}1
 }
 \lstset{style=javastyle}
 
@@ -390,7 +394,9 @@ Light is OFF
 
 
     \section{Fazit}
-    asd
+    Das Command Pattern ist ein bewährtes Entwurfsmuster zur Entkopplung von aufrufenden und ausführenden Komponenten. Durch die Kapselung von Befehlen als eigenständige Objekte erhöht es die Flexibilität, Wartbarkeit und Erweiterbarkeit von Softwaresystemen. Gleichzeitig bildet es die Grundlage für weiterführende Funktionen wie Undo-/Redo-Mechanismen, Makros oder die Verarbeitung von Befehlswarteschlangen.
+
+    Die Analyse anhand des Vier-Punkte-Schemas hat die Funktionsweise sowie die Vor- und Nachteile des Musters verdeutlicht. Das anschließende Java-Beispiel zeigte, wie die theoretischen Konzepte in einer praktischen Implementierung umgesetzt werden können. Insgesamt eignet sich das Command Pattern insbesondere für Anwendungen, in denen Befehle flexibel verwaltet, erweitert oder zeitlich unabhängig ausgeführt werden sollen. Trotz des erhöhten Implementierungsaufwands überwiegen in vielen Anwendungsfällen die Vorteile einer klar strukturierten und entkoppelten Softwarearchitektur.
 
 
     \newpage
